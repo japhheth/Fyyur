@@ -58,6 +58,8 @@ instance/
 # pyenv
 .python-version
 
+.vscode
+
 
 # Environments
 .env
