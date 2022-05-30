@@ -59,6 +59,7 @@ instance/
 .python-version
 
 .vscode
+.DS_Store
 
 
 # Environments
