@@ -22,7 +22,7 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    seeking_venue = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_venue = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
 
     venues = db.relationship('Venue', secondary='shows')
@@ -62,7 +62,7 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
 
     artists = db.relationship('Artist', secondary='shows', overlaps='venues')
