@@ -55,6 +55,8 @@ coverage.xml
 instance/
 .webassets-cache
 
+__pycache__/
+
 # pyenv
 .python-version
 
