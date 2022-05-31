@@ -11,6 +11,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from datetime import datetime
 import logging
 from logging import Formatter, FileHandler 
 from forms import *
@@ -19,32 +20,37 @@ from forms import *
 # App Config.
 #----------------------------------------------------------------------------#
 
+#----------------------------------------------------------------------------#
+# Models.
+#----------------------------------------------------------------------------#
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+SQLALCHEMY_DATABASE_URI = 'postgresql://japhheth@localhost:5432/fyyur'
+from models import db, Venue, Show, Artist
 db = SQLAlchemy(app)
+
+# connect to a local postgresql database
 migrate = Migrate(app, db)
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://japhheth@localhost:5432/fyyur'
 
-#----------------------------------------------------------------------------#
-# Models.
-#----------------------------------------------------------------------------#
-
-from models import *
 
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
 
 def format_datetime(value, format='medium'):
-  date = dateutil.parser.parse(value)
+  print (type(value))
+  if isinstance(value, str):
+    date = dateutil.parser.parse(value)
+  else:
+    date = value
   if format == 'full':
       format="EEEE MMMM, d, y 'at' h:mma"
   elif format == 'medium':
       format="EE MM, dd, y h:mma"
-  return babel.dates.format_datetime(date, format,locale='en')
+  return babel.dates.format_datetime(date, format)
 
 app.jinja_env.filters['datetime'] = format_datetime
 
@@ -133,7 +139,7 @@ def show_venue(venue_id):
       "artist_id": show.artist_id,
       "artist_name": show.artist.name,
       "artist_image_link": show.artist.image_link,
-      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+      "start_time": show.start_time
     })
 
   for show in filtered_upcoming_shows:
@@ -141,7 +147,7 @@ def show_venue(venue_id):
       "artist_id": show.artist_id,
       "artist_name": show.artist.name,
       "artist_image_link": show.artist.image_link,
-      "start_time": show.start_time.strftime("%Y-%m-%d %H:%M:%S")    
+      "start_time": show.start_time  
     })
 
   response = {
@@ -315,7 +321,7 @@ def show_artist(artist_id):
   if not artist_query: 
     return render_template('errors/404.html')
 
-  filtered_past_shows = Show.query.join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+  filtered_past_shows = Show.query.join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time<datetime.now()).all()
   prev_shows = []
 
   for show in filtered_past_shows:
@@ -323,7 +329,7 @@ def show_artist(artist_id):
       "venue_id": show.venue_id,
       "venue_name": show.venue.name,
       "artist_image_link": show.venue.image_link,
-      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+      "start_time": show.start_time
     })
 
   filtered_upcoming_shows = Show.query.join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
@@ -334,7 +340,7 @@ def show_artist(artist_id):
       "venue_id": show.venue_id,
       "venue_name": show.venue.name,
       "artist_image_link": show.venue.image_link,
-      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+      "start_time": show.start_time
     })
 
 
@@ -467,7 +473,7 @@ def shows():
       "artist_id": show.artist_id,
       "artist_name": show.artist.name, 
       "artist_image_link": show.artist.image_link,
-      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+      "start_time": show.start_time
     })
 
   return render_template('pages/shows.html', shows=data)

@@ -1,15 +1,7 @@
-"""
-Models for Artist, Venue and Show
-"""
-# Imports
-
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
 
 # Models.
-
-
 class Artist(db.Model):
     __tablename__ = 'artists'
 
@@ -49,7 +41,6 @@ class Artist(db.Model):
 
 
 class Venue(db.Model):
-    """ Venue Model """
     __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -90,7 +81,6 @@ class Venue(db.Model):
 
 
 class Show(db.Model):
-    """ Show Model """
     __tablename__ = 'shows'
 
     id = db.Column(db.Integer, primary_key=True)
